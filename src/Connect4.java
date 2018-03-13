@@ -116,7 +116,7 @@ public class Connect4 {
         }
         graphic.fillOval(125 + 125 * column, 100 + 125 * row, 100, 100);
 
-        if (chart.isNowWinner(row, column, player)) {
+        if (chart.isNowWinner(player)) {
             graphic.setColor(Color.WHITE);
             graphic.fillRect(500, 855, 100, 60);
             graphic.setColor(Color.BLACK);
