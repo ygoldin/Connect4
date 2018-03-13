@@ -4,8 +4,8 @@
 public class Grid {
     private int[][] grid;
     private int filledSpots;
-    private int lastFilledRow;
-    private int lastFilledColumn;
+    private int curPlayer;
+    private boolean lastMoveWon;
     public static final int ROWS = 6;
     public static final int COLUMNS = 7;
     public static final int IN_A_ROW = 4;
@@ -16,8 +16,8 @@ public class Grid {
     public Grid() {
         grid = new int[ROWS][COLUMNS];
         filledSpots = 0;
-        lastFilledRow = -1;
-        lastFilledColumn = -1;
+        curPlayer = 1;
+        lastMoveWon = false;
     }
 
     /**
@@ -27,6 +27,15 @@ public class Grid {
      */
     public int[][] getGrid() {
         return grid;
+    }
+    
+    /**
+     * gets the current player
+     * 
+     * @return 1 if it's player 1's turn, 2 if player 2's
+     */
+    public int getCurPlayer() {
+    	return curPlayer;
     }
 
     /**
@@ -51,23 +60,23 @@ public class Grid {
      * @return the row the color was put in
      * @throws IllegalArgumentException if column isn't in the range [0, COLUMNS) or the column is full
      */
-    public int putDisk(int column, int color) {
+    public int putDisk(int column) {
     	if(columnFilled(column)) {
     		throw new IllegalArgumentException("filled column: " + column);
     	}
-        boolean placed = false;
-        for (int row = ROWS - 1; row >= 0 && !placed; row--) {
+        int lastFilledRow = -1;
+        int lastFilledColumn = column;
+        for (int row = ROWS - 1; row >= 0 && lastFilledRow == -1; row--) {
             if (grid[row][column] == 0) {
-                grid[row][column] = color;
+                grid[row][column] = curPlayer;
                 lastFilledRow = row;
-                lastFilledColumn = column;
                 filledSpots++;
-                placed = true;
             }
         }
-        if(!placed) {
-        	throw new IllegalStateException("column wasn't full but disk wasn't placed: " + column);
-        }
+        assert(lastFilledRow != -1) : "column wasn't full but disk wasn't placed: " + column;
+        lastMoveWon = wonVertically(lastFilledRow, lastFilledColumn) || wonHorizontally(lastFilledRow) ||
+        		wonDiagonally(lastFilledRow, lastFilledColumn);
+        curPlayer = (curPlayer % 2) + 1; //1 -> 2, 2 -> 1
         return lastFilledRow;
     }
 
@@ -81,30 +90,41 @@ public class Grid {
     }
 
     /**
-     * checks if the player who just placed the last move won
+     * checks if the game ended
      * 
-     * @param color The color of the player who placed it
-     * @return true if they won, or false if there is still no winner
+     * @return true if someone won or it's a draw, false otherwise
      */
-    public boolean isNowWinner(int color) {
-    	if(lastFilledRow == -1) {
-    		return false; //no moves yet
+    public boolean isGameOver() {
+    	return lastMoveWon || isDraw();
+    }
+    
+    /**
+     * returns the winner or if there is none
+     * 
+     * @return -1 if the game isn't over, 0 if it ended in a draw, 1 if player 1 won, 2 if player 2 won
+     */
+    public int winner() {
+    	if(lastMoveWon) {
+    		return (curPlayer % 2) + 1; //curPlayer changes after every move, need to change it back
+    	} else if(isDraw()) {
+    		return 0;
+    	} else {
+    		return -1;
     	}
-        return wonVertically(color) || wonHorizontally(color) || wonDiagonally(color);
     }
     
     //checks if the player has 4 in a row vertically
-    private boolean wonVertically(int color) {
-    	return lastFilledRow <= 2 && grid[lastFilledRow + 1][lastFilledColumn] == color &&
-    			grid[lastFilledRow + 2][lastFilledColumn] == color &&
-    			grid[lastFilledRow + 3][lastFilledColumn] == color;
+    private boolean wonVertically(int lastFilledRow, int lastFilledColumn) {
+    	return lastFilledRow <= 2 && grid[lastFilledRow + 1][lastFilledColumn] == curPlayer &&
+    			grid[lastFilledRow + 2][lastFilledColumn] == curPlayer &&
+    			grid[lastFilledRow + 3][lastFilledColumn] == curPlayer;
     }
     
     //checks if the player has 4 in a row vertically
-    private boolean wonHorizontally(int color) {
+    private boolean wonHorizontally(int lastFilledRow) {
     	int colorInARow = 0;
         for(int i = 0; i < COLUMNS; i++) {
-        	if(grid[lastFilledRow][i] == color) {
+        	if(grid[lastFilledRow][i] == curPlayer) {
         		colorInARow++;
         		if(colorInARow == IN_A_ROW) {
         			return true;
@@ -117,7 +137,7 @@ public class Grid {
     }
     
     //checks if the player has 4 in a row diagonally
-    private boolean wonDiagonally(int color) {
+    private boolean wonDiagonally(int lastFilledRow, int lastFilledColumn) {
     	//bottom left -> top right
         int rStart = lastFilledRow + IN_A_ROW - 1;
         int cStart = lastFilledColumn - IN_A_ROW + 1;
@@ -127,7 +147,7 @@ public class Grid {
         	int curC = cStart + i;
         	if(curR < 0 || curC >= COLUMNS) {
         		break; //out of bounds for the rest of the loop
-        	} else if(curR >= ROWS || curC < 0 || grid[curR][curC] != color) {
+        	} else if(curR >= ROWS || curC < 0 || grid[curR][curC] != curPlayer) {
         		colorInARow = 0; //out of bounds at the start of the loop, or wrong color
         	} else {
         		colorInARow++;
@@ -145,7 +165,7 @@ public class Grid {
         	int curC = cStart + i;
         	if(curR >= ROWS || curC < 0) {
         		break; //out of bounds for the rest of the loop
-        	} else if(curR < 0 || curC >= COLUMNS || grid[curR][curC] != color) {
+        	} else if(curR < 0 || curC >= COLUMNS || grid[curR][curC] != curPlayer) {
         		colorInARow = 0; //out of bounds at the start of the loop, or wrong color
         	} else {
         		colorInARow++;
