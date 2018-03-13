@@ -30,12 +30,13 @@ public class Connect4 {
 
         Grid chart = new Grid();
         Scanner input = new Scanner(System.in);
-        char playAgain = 'n';
-        int player1wins = 0, player2wins = 0;
+        int player1wins = 0;
+        int player2wins = 0;
+        int draws = 0;
         System.out.println("Welcome to Connect4!\n");
 
         do { // at least one game will be played
-            if (playAgain == 'y') { // is only done for the non-first game
+            if (draws + player1wins + player2wins > 0) { // is only done for the non-first game
                 chart = new Grid();
                 graphic.setColor(Color.WHITE);
                 graphic.fillRect(50, 851, 900, 50);
@@ -48,60 +49,47 @@ public class Connect4 {
                 graphic.setFont(new Font("Title", Font.PLAIN, 50));
                 graphic.drawString(player1wins + " : " + player2wins, 505, 895);
             }
-
-            boolean isWinner = false;
-
-            // alternates player 1 and player 2 placing their pieces in the chart
-            // ends when there is a draw (which can only happen after player 2 goes)
-            // or when one player wins
-            while (!chart.isDraw()) {
-                isWinner = perPlayer(input, chart, graphic);
-                if (isWinner) { // player1 is the winner
-                    player1wins++;
-                    break;
-                }
-                isWinner = perPlayer(input, chart, graphic);
-                if (isWinner) { // player2 is the winner
-                    player2wins++;
-                    break;
-                }
+            
+            while(!chart.isGameOver()) {
+            	onePlayersMove(input, chart, graphic);
             }
 
             graphic.setColor(Color.BLACK);
             if (chart.isDraw()) {
                 graphic.setFont(new Font("Title", Font.PLAIN, 40));
                 graphic.drawString("IT'S A DRAW!", 400, 885);
+                draws++;
+            } else {
+            	int winner = chart.winner();
+            	assert(winner == 1 || winner == 2) : "should be a winner at this point";
+            	if(winner == 1) {
+            		player1wins++;
+            	} else {
+            		player2wins++;
+            	}
+            	graphic.setColor(Color.WHITE);
+                graphic.fillRect(500, 855, 100, 60);
+                graphic.setColor(Color.BLACK);
+                graphic.setFont(new Font("Title", Font.PLAIN, 40));
+                graphic.drawString("PLAYER " + winner + " IS THE WINNER!", 280, 885);
             }
-            System.out.println();
-            System.out.println("Play again? Anything other than a phrase starting with 'y' will mean no");
-            String playing = input.next();
-            input.nextLine();
-            playAgain = playing.charAt(0);
-
-        } while (playAgain == 'y');
-
-        graphic.setColor(Color.WHITE);
-        graphic.fillRect(280, 855, 540, 60); // "erases" any previous words at the bottom of the screen
-        graphic.setColor(Color.BLACK);
-        graphic.setFont(new Font("Title", Font.PLAIN, 50));
-        graphic.drawString("FINAL SCORE " + player1wins + " : " + player2wins, 350, 895);
-
-        if (player1wins > player2wins) {
-            System.out.print("Player 1 has won more!");
-        } else if (player2wins > player1wins) {
-            System.out.print("Player 2 has won more!");
-        } else {
-            System.out.print("It's a tie!");
-        }
-
+        } while (playAgain(input));
+        printFinalStats(graphic, player1wins, player2wins);
         input.close();
+    }
+    
+    private static boolean playAgain(Scanner input) {
+    	System.out.println();
+        System.out.println("Play again? Anything other than a phrase starting with 'y/Y' will mean no");
+        char playing = input.nextLine().charAt(0);
+        return playing == 'y' || playing == 'Y';
     }
 
     // essentially this method runs one turn for a player
     // they put their chip in whichever valid column they want
     // then the method checks if placing that chip made the player win, which
     // returns "true", otherwise it's "false"
-    public static boolean perPlayer(Scanner input, Grid chart, Graphics graphic) {
+    private static void onePlayersMove(Scanner input, Grid chart, Graphics graphic) {
     	int playerN = chart.getCurPlayer();
         System.out.print("Player " + playerN + ": which column do you want to put a chip in? ");
         int column = whichColumn(input, chart);
@@ -113,21 +101,11 @@ public class Connect4 {
             graphic.setColor(Color.YELLOW);
         }
         graphic.fillOval(125 + 125 * column, 100 + 125 * row, 100, 100);
-
-        if (chart.isGameOver()) {
-            graphic.setColor(Color.WHITE);
-            graphic.fillRect(500, 855, 100, 60);
-            graphic.setColor(Color.BLACK);
-            graphic.setFont(new Font("Title", Font.PLAIN, 40));
-            graphic.drawString("PLAYER " + playerN + " IS THE WINNER!", 280, 885);
-            return true;
-        }
-        return false;
     }
 
     // prompts the user for a column to enter their chip in
     // will keep asking until a valid column is entered
-    public static int whichColumn(Scanner input, Grid chart) {
+    private static int whichColumn(Scanner input, Grid chart) {
         int column = -1;
         if (input.hasNextInt()) { // they entered an integer
             column = input.nextInt();
@@ -141,6 +119,22 @@ public class Connect4 {
         input.nextLine();
         System.out.print("Please enter a valid column number (0-6) that isn't filled: ");
         return whichColumn(input, chart); // need to enter something else
+    }
+    
+    private static void printFinalStats(Graphics graphic, int player1wins, int player2wins) {
+    	graphic.setColor(Color.WHITE);
+        graphic.fillRect(280, 855, 540, 60); // "erases" any previous words at the bottom of the screen
+        graphic.setColor(Color.BLACK);
+        graphic.setFont(new Font("Title", Font.PLAIN, 50));
+        graphic.drawString("FINAL SCORE " + player1wins + " : " + player2wins, 350, 895);
+
+        if (player1wins > player2wins) {
+            System.out.print("Player 1 has won more!");
+        } else if (player2wins > player1wins) {
+            System.out.print("Player 2 has won more!");
+        } else {
+            System.out.print("It's a tie!");
+        }
     }
 
 }
