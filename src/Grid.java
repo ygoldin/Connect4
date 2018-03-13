@@ -95,20 +95,17 @@ public class Grid {
         if (r <= 2 && grid[r + 1][c] == color && grid[r + 2][c] == color && grid[r + 3][c] == color) {
             return true;
         }
-        // check horizontal winning
-        // first check for if the chip was placed on the leftmost spot of the 4
-        // in a row
-        // second check for if the chip was placed on the 2nd spot from the left
-        // third check for if the chip was placed on the 2nd spot from the right
-        // fourth check for if the chip was placed on the right of the 4
-        if (c <= 3 && grid[r][c + 1] == color && grid[r][c + 2] == color && grid[r][c + 3] == color) {
-            return true;
-        } else if (c >= 1 && c <= 4 && grid[r][c - 1] == color && grid[r][c + 1] == color && grid[r][c + 2] == color) {
-            return true;
-        } else if (c >= 2 && c <= 5 && grid[r][c - 2] == color && grid[r][c - 1] == color && grid[r][c + 1] == color) {
-            return true;
-        } else if (c >= 3 && grid[r][c - 1] == color && grid[r][c - 2] == color && grid[r][c - 3] == color) {
-            return true;
+        // check horizontal winning, if there are 4 consecutive "color" disks in the row
+        int colorInARow = 0;
+        for(int i = 0; i < COLUMNS; i++) {
+        	if(grid[r][i] == color) {
+        		colorInARow++;
+        		if(colorInARow == IN_A_ROW) {
+        			return true;
+        		}
+        	} else {
+        		colorInARow = 0;
+        	}
         }
         // checks diagonal winning in same method as checking rows (it could be
         // placed in any of the 4 locations in
