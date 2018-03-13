@@ -87,13 +87,13 @@ public class Grid {
      * @param r The row it was placed in
      * @param c The column it was placed in
      * @param color The color of the player who placed it
-     * @return *color* if they won, or ' ' if there is still no winner
+     * @return true if they won, or false if there is still no winner
      */
-    public char isNowWinner(int r, int c, char color) {
+    public boolean isNowWinner(int r, int c, char color) {
         // check vertical winning only if chip placed is in the top 3 rows
         // because thats the only way for a vertical win to occur
         if (r <= 2 && grid[r + 1][c] == color && grid[r + 2][c] == color && grid[r + 3][c] == color) {
-            return color;
+            return true;
         }
         // check horizontal winning
         // first check for if the chip was placed on the leftmost spot of the 4
@@ -102,13 +102,13 @@ public class Grid {
         // third check for if the chip was placed on the 2nd spot from the right
         // fourth check for if the chip was placed on the right of the 4
         if (c <= 3 && grid[r][c + 1] == color && grid[r][c + 2] == color && grid[r][c + 3] == color) {
-            return color;
+            return true;
         } else if (c >= 1 && c <= 4 && grid[r][c - 1] == color && grid[r][c + 1] == color && grid[r][c + 2] == color) {
-            return color;
+            return true;
         } else if (c >= 2 && c <= 5 && grid[r][c - 2] == color && grid[r][c - 1] == color && grid[r][c + 1] == color) {
-            return color;
+            return true;
         } else if (c >= 3 && grid[r][c - 1] == color && grid[r][c - 2] == color && grid[r][c - 3] == color) {
-            return color;
+            return true;
         }
         // checks diagonal winning in same method as checking rows (it could be
         // placed in any of the 4 locations in
@@ -117,34 +117,34 @@ public class Grid {
         if (r <= 2 && c <= 3 && grid[r + 1][c + 1] == color && grid[r + 2][c + 2] == color
                 && grid[r + 3][c + 3] == color) {
             // placed in top left spot
-            return color;
+            return true;
         } else if (r >= 1 && r <= 3 && c >= 1 && c <= 4 && grid[r - 1][c - 1] == color && grid[r + 1][c + 1] == color
                 && grid[r + 2][c + 2] == color) { // 2nd left
-            return color;
+            return true;
         } else if (r >= 2 && r <= 4 && c >= 2 && c <= 5 && grid[r - 2][c - 2] == color && grid[r - 1][c - 1] == color
                 && grid[r + 1][c + 1] == color) { // 2nd right
-            return color;
+            return true;
         } else if (r >= 3 && c >= 3 && grid[r - 1][c - 1] == color && grid[r - 2][c - 2] == color
                 && grid[r - 3][c - 3] == color) { // placed in bottom right spot
-            return color;
+            return true;
         }
         // second set of checks for increasing left-right
         if (r >= 3 && c <= 3 && grid[r - 1][c + 1] == color && grid[r - 2][c + 2] == color
                 && grid[r - 3][c + 3] == color) {
             // placed in bottom left spot
-            return color;
+            return true;
         } else if (r >= 2 && r <= 4 && c >= 1 && c <= 4 && grid[r + 1][c - 1] == color && grid[r - 1][c + 1] == color
                 && grid[r - 2][c + 2] == color) { // 2nd left
-            return color;
+            return true;
         } else if (r >= 1 && r <= 3 && c >= 2 && c <= 5 && grid[r + 1][c - 1] == color && grid[r + 2][c - 2] == color
                 && grid[r - 1][c + 1] == color) { // 2nd right
-            return color;
+            return true;
         } else if (r <= 2 && c >= 3 && grid[r + 1][c - 1] == color && grid[r + 2][c - 2] == color
                 && grid[r + 3][c - 3] == color) { // placed in top right spot
-            return color;
+            return true;
         }
 
-        return ' '; // means that placing the chip did not result in a win
+        return false; // means that placing the chip did not result in a win
     }
 
     @Override

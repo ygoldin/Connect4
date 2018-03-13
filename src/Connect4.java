@@ -51,28 +51,26 @@ public class Connect4 {
             }
 
             int column = -1, row = -1;
-            char winner = ' ';
-            boolean isWinner = false, isDraw = false;
+            boolean isWinner = false;
 
             // alternates player 1 and player 2 placing their pieces in the chart
             // ends when there is a draw (which can only happen after player 2 goes)
             // or when one player wins
-            while (isDraw == false) {
-                isWinner = perPlayer(1, player1, column, row, winner, input, chart, graphic);
-                if (isWinner == true) { // player1 is the winner
+            while (!chart.isDraw()) {
+                isWinner = perPlayer(1, player1, column, row, input, chart, graphic);
+                if (isWinner) { // player1 is the winner
                     player1wins++;
                     break;
                 }
-                isWinner = perPlayer(2, player2, column, row, winner, input, chart, graphic);
-                if (isWinner == true) { // player2 is the winner
+                isWinner = perPlayer(2, player2, column, row, input, chart, graphic);
+                if (isWinner) { // player2 is the winner
                     player2wins++;
                     break;
                 }
-                isDraw = chart.isDraw();
             }
 
             graphic.setColor(Color.BLACK);
-            if (isDraw == true) {
+            if (chart.isDraw()) {
                 graphic.setFont(new Font("Title", Font.PLAIN, 40));
                 graphic.drawString("IT'S A DRAW!", 400, 885);
             }
@@ -105,7 +103,7 @@ public class Connect4 {
     // they put their chip in whichever valid column they want
     // then the method checks if placing that chip made the player win, which
     // returns "true", otherwise it's "false"
-    public static boolean perPlayer(int playerN, char player, int column, int row, char winner, Scanner input,
+    public static boolean perPlayer(int playerN, char player, int column, int row, Scanner input,
             Grid chart, Graphics graphic) {
         System.out.print("Player " + playerN + ": which column do you want to put a chip in? ");
         column = whichColumn(input, chart);
@@ -118,8 +116,7 @@ public class Connect4 {
         }
         graphic.fillOval(125 + 125 * column, 100 + 125 * row, 100, 100);
 
-        winner = chart.isNowWinner(row, column, player);
-        if (winner == player) {
+        if (chart.isNowWinner(row, column, player)) {
             graphic.setColor(Color.WHITE);
             graphic.fillRect(500, 855, 100, 60);
             graphic.setColor(Color.BLACK);
