@@ -58,10 +58,13 @@ public class Grid {
      * @param column The column to put the disk in
      * @param color The color to put in that column
      * @return the row the color was put in
+     * @throws IllegalStateException if the game is over
      * @throws IllegalArgumentException if column isn't in the range [0, COLUMNS) or the column is full
      */
     public int putDisk(int column) {
-    	if(columnFilled(column)) {
+    	if(isGameOver()) {
+    		throw new IllegalStateException("game is over");
+    	} else if(columnFilled(column)) {
     		throw new IllegalArgumentException("filled column: " + column);
     	}
         int lastFilledRow = -1;

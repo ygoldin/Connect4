@@ -1,6 +1,10 @@
 import java.awt.*;
 import java.util.Scanner;
 
+/**
+ * this class can be used to play a game of Connect4 via a DrawingPanel and user input given in System.in
+ * @author Yael Goldin
+ */
 public class Connect4 {
 
     public static void main(String[] args) {
@@ -33,7 +37,8 @@ public class Connect4 {
         int player1wins = 0;
         int player2wins = 0;
         int draws = 0;
-        System.out.println("Welcome to Connect4!\n");
+        System.out.println("Welcome to Connect4!");
+        System.out.println();
 
         do { // at least one game will be played
             if (draws + player1wins + player2wins > 0) { // is only done for the non-first game
@@ -55,13 +60,13 @@ public class Connect4 {
             }
 
             graphic.setColor(Color.BLACK);
-            if (chart.isDraw()) {
+            int winner = chart.winner();
+            if (winner == 0) { //draw
                 graphic.setFont(new Font("Title", Font.PLAIN, 40));
                 graphic.drawString("IT'S A DRAW!", 400, 885);
                 draws++;
-            } else {
-            	int winner = chart.winner();
-            	assert(winner == 1 || winner == 2) : "should be a winner at this point";
+            } else { //someone won
+            	assert (winner != -1) : "game is over";
             	if(winner == 1) {
             		player1wins++;
             	} else {
@@ -78,6 +83,7 @@ public class Connect4 {
         input.close();
     }
     
+    // checks if the user wants to play again 
     private static boolean playAgain(Scanner input) {
     	System.out.println();
         System.out.println("Play again? Anything other than a phrase starting with 'y/Y' will mean no");
@@ -121,6 +127,7 @@ public class Connect4 {
         return whichColumn(input, chart); // need to enter something else
     }
     
+    // prints the stats for who won more games
     private static void printFinalStats(Graphics graphic, int player1wins, int player2wins) {
     	graphic.setColor(Color.WHITE);
         graphic.fillRect(280, 855, 540, 60); // "erases" any previous words at the bottom of the screen
