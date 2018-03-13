@@ -30,7 +30,6 @@ public class Connect4 {
 
         Grid chart = new Grid();
         Scanner input = new Scanner(System.in);
-        char player1 = 'R', player2 = 'Y';
         char playAgain = 'n';
         int player1wins = 0, player2wins = 0;
         System.out.println("Welcome to Connect4!\n");
@@ -57,12 +56,12 @@ public class Connect4 {
             // ends when there is a draw (which can only happen after player 2 goes)
             // or when one player wins
             while (!chart.isDraw()) {
-                isWinner = perPlayer(1, player1, column, row, input, chart, graphic);
+                isWinner = perPlayer(1, column, row, input, chart, graphic);
                 if (isWinner) { // player1 is the winner
                     player1wins++;
                     break;
                 }
-                isWinner = perPlayer(2, player2, column, row, input, chart, graphic);
+                isWinner = perPlayer(2, column, row, input, chart, graphic);
                 if (isWinner) { // player2 is the winner
                     player2wins++;
                     break;
@@ -103,11 +102,11 @@ public class Connect4 {
     // they put their chip in whichever valid column they want
     // then the method checks if placing that chip made the player win, which
     // returns "true", otherwise it's "false"
-    public static boolean perPlayer(int playerN, char player, int column, int row, Scanner input,
+    public static boolean perPlayer(int playerN, int column, int row, Scanner input,
             Grid chart, Graphics graphic) {
         System.out.print("Player " + playerN + ": which column do you want to put a chip in? ");
         column = whichColumn(input, chart);
-        row = chart.putDisk(column, player);
+        row = chart.putDisk(column, playerN);
         // change the circle in the graphic to be the player's color
         if (playerN == 1) { // player 1 is red
             graphic.setColor(Color.RED);
@@ -116,7 +115,7 @@ public class Connect4 {
         }
         graphic.fillOval(125 + 125 * column, 100 + 125 * row, 100, 100);
 
-        if (chart.isNowWinner(player)) {
+        if (chart.isNowWinner(playerN)) {
             graphic.setColor(Color.WHITE);
             graphic.fillRect(500, 855, 100, 60);
             graphic.setColor(Color.BLACK);
