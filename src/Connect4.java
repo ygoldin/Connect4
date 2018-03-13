@@ -54,12 +54,9 @@ public class Connect4 {
             char winner = ' ';
             boolean isWinner = false, isDraw = false;
 
-            // alternates player 1 and player 2 placing their pieces in the
-            // chart
-            // ends when there is a draw (which can only happen after player 2
-            // goes because there are an
-            // even number of spots in the chart
-            // will also end if the "break" call is called when one player wins
+            // alternates player 1 and player 2 placing their pieces in the chart
+            // ends when there is a draw (which can only happen after player 2 goes)
+            // or when one player wins
             while (isDraw == false) {
                 isWinner = perPlayer(1, player1, column, row, winner, input, chart, graphic);
                 if (isWinner == true) { // player1 is the winner
@@ -79,8 +76,8 @@ public class Connect4 {
                 graphic.setFont(new Font("Title", Font.PLAIN, 40));
                 graphic.drawString("IT'S A DRAW!", 400, 885);
             }
-
-            System.out.println("\nPlay again? Anything other than a phrase starting with 'y' will mean no");
+            System.out.println();
+            System.out.println("Play again? Anything other than a phrase starting with 'y' will mean no");
             String playing = input.next();
             input.nextLine();
             playAgain = playing.charAt(0);
@@ -88,10 +85,7 @@ public class Connect4 {
         } while (playAgain == 'y');
 
         graphic.setColor(Color.WHITE);
-        graphic.fillRect(280, 855, 540, 60); // essentially "erases" any
-                                             // previous words written at the
-                                             // bottom of
-        // the screen
+        graphic.fillRect(280, 855, 540, 60); // "erases" any previous words at the bottom of the screen
         graphic.setColor(Color.BLACK);
         graphic.setFont(new Font("Title", Font.PLAIN, 50));
         graphic.drawString("FINAL SCORE " + player1wins + " : " + player2wins, 350, 895);
@@ -114,9 +108,7 @@ public class Connect4 {
     public static boolean perPlayer(int playerN, char player, int column, int row, char winner, Scanner input,
             Grid chart, Graphics graphic) {
         System.out.print("Player " + playerN + ": which column do you want to put a chip in? ");
-        column = whichColumn(input, chart); // calls a method that will only
-                                            // return when a valid column number
-                                            // is entered by the user
+        column = whichColumn(input, chart);
         row = chart.putDisk(column, player);
         // change the circle in the graphic to be the player's color
         if (playerN == 1) { // player 1 is red
@@ -145,11 +137,7 @@ public class Connect4 {
         if (input.hasNextInt()) { // they entered an integer
             column = input.nextInt();
             input.nextLine();
-            if (column > 6 || column < 0 || chart.columnFilled(column) == true) { // such
-                                                                                  // a
-                                                                                  // column
-                                                                                  // doesn't
-                // exist or is filled
+            if (column > 6 || column < 0 || chart.columnFilled(column)) { //doesn't exist or is full
                 System.out.print("Please enter a valid column number (0-6) that isn't filled: ");
                 return whichColumn(input, chart); // need to enter again
             }
@@ -157,8 +145,7 @@ public class Connect4 {
         }
         input.nextLine();
         System.out.print("Please enter a valid column number (0-6) that isn't filled: ");
-        return whichColumn(input, chart); // need to enter something else, so
-                                          // they're asked again
+        return whichColumn(input, chart); // need to enter something else
     }
 
 }

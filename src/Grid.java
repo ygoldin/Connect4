@@ -1,63 +1,94 @@
-
+/**
+ * a Grid can be used as the model for a Connect4 game
+ */
 public class Grid {
     private char[][] grid;
+    private int filledSpots;
+    public static final int ROWS = 6;
+    public static final int COLUMNS = 7;
+    public static final int IN_A_ROW = 4;
 
-    // constructs a 6x7 grid where each spot is initialized with a space
+    /**
+     * constructs a ROWSxCOLUMNS grid where each spot is initialized as empty
+     */
     public Grid() {
-        grid = new char[6][7];
-        for (int r = 0; r < 6; r++) {
-            for (int c = 0; c < 7; c++) {
+        grid = new char[ROWS][COLUMNS];
+        for (int r = 0; r < ROWS; r++) {
+            for (int c = 0; c < COLUMNS; c++) {
                 grid[r][c] = ' ';
             }
         }
+        filledSpots = 0;
     }
 
+    /**
+     * returns the grid representation
+     * @return an array representation of the grid
+     */
     public char[][] getGrid() {
         return grid;
     }
 
     // checks if a column is filled by looking to see if the top spot is not
     // empty
+    /**
+     * checks if a column is filled
+     * 
+     * @param column The column to look at
+     * @return true if the column is filled, false otherwise
+     * @throws IllegalArgumentException if column isn't in the range [0, COLUMNS)
+     */
     public boolean columnFilled(int column) {
-        if (grid[0][column] != ' ') {
-            return true;
-        } else {
-            return false;
-        }
+    	if(column < 0 || column >= COLUMNS) {
+    		throw new IllegalArgumentException("invalid column value: " + column);
+    	}
+        return grid[0][column] != ' ';
     }
 
     // puts *color* into the column
     // since the chip drops to the bottom, it looks for the first open space
     // starting on the last row
     // it then returns the row or -1 if the column is filled
+    /**
+     * puts *color* into the given column
+     * 
+     * @param column The column to put the disk in
+     * @param color The color to put in that column
+     * @return the row the color was put in
+     * @throws IllegalArgumentException if column isn't in the range [0, COLUMNS) or the column is full
+     */
     public int putDisk(int column, char color) {
-        if (columnFilled(column) == true) {
-            return -1;
-        }
-        for (int row = 5; row >= 0; row--) {
+    	if(columnFilled(column)) {
+    		throw new IllegalArgumentException("filled column: " + column);
+    	}
+        filledSpots++;
+        for (int row = ROWS - 1; row > 0; row--) {
             if (grid[row][column] == ' ') {
                 grid[row][column] = color;
                 return row;
             }
         }
-        return -1; // should not reach this point because if the column was
-                   // filled it would not pass the first
-                   // return statement
+        grid[0][column] = color;
+        return 0;
     }
 
-    // checks if the chart is filled
+    /**
+     * checks if the board is full in a draw
+     * 
+     * @return true if the game has ended in a draw, false otherwise
+     */
     public boolean isDraw() {
-        for (int column = 0; column < 7; column++) {
-            if (grid[0][column] == ' ') { // if there is a space at the top of
-                                          // any column, it can't be filled
-                return false;
-            }
-        }
-        return true;
+        return filledSpots == ROWS*COLUMNS;
     }
 
-    // checks if placing a chip in grid[r][c] caused the player to win
-    // returns *color* if they won, or ' ' if there is still no winner
+    /**
+     * checks if placing a chip in that location caused the player to win
+     * 
+     * @param r The row it was placed in
+     * @param c The column it was placed in
+     * @param color The color of the player who placed it
+     * @return *color* if they won, or ' ' if there is still no winner
+     */
     public char isNowWinner(int r, int c, char color) {
         // check vertical winning only if chip placed is in the top 3 rows
         // because thats the only way for a vertical win to occur
@@ -116,9 +147,10 @@ public class Grid {
         return ' '; // means that placing the chip did not result in a win
     }
 
-    // returns the chart as a two-dimensional array with '|' separating the
-    // columns
     @Override
+    /**
+     * @return a String representation of the chart as a two-dimensional array with '|' separating the
+     */
     public String toString() {
         String result = "  0   1   2   3   4   5   6\n";
         for (int r = 0; r < 6; r++) {
