@@ -107,40 +107,43 @@ public class Grid {
         		colorInARow = 0;
         	}
         }
-        // checks diagonal winning in same method as checking rows (it could be
-        // placed in any of the 4 locations in
-        // the diagonal)
-        // first set of checks for decreasing left-right diagonal
-        if (r <= 2 && c <= 3 && grid[r + 1][c + 1] == color && grid[r + 2][c + 2] == color
-                && grid[r + 3][c + 3] == color) {
-            // placed in top left spot
-            return true;
-        } else if (r >= 1 && r <= 3 && c >= 1 && c <= 4 && grid[r - 1][c - 1] == color && grid[r + 1][c + 1] == color
-                && grid[r + 2][c + 2] == color) { // 2nd left
-            return true;
-        } else if (r >= 2 && r <= 4 && c >= 2 && c <= 5 && grid[r - 2][c - 2] == color && grid[r - 1][c - 1] == color
-                && grid[r + 1][c + 1] == color) { // 2nd right
-            return true;
-        } else if (r >= 3 && c >= 3 && grid[r - 1][c - 1] == color && grid[r - 2][c - 2] == color
-                && grid[r - 3][c - 3] == color) { // placed in bottom right spot
-            return true;
+        //check diagonal winning        
+        //bottom left -> top right
+        int rStart = r + IN_A_ROW - 1;
+        int cStart = c - IN_A_ROW + 1;
+        colorInARow = 0;
+        for(int i = 0; i < COLUMNS; i++) {
+        	int curR = rStart - i;
+        	int curC = cStart + i;
+        	if(curR < 0 || curC >= COLUMNS) {
+        		break; //out of bounds for the rest of the loop
+        	} else if(curR >= ROWS || curC < 0 || grid[curR][curC] != color) {
+        		colorInARow = 0; //currently out of bounds or wrong color
+        	} else {
+        		colorInARow++;
+        		if(colorInARow == IN_A_ROW) {
+        			return true;
+        		}
+        	}
         }
-        // second set of checks for increasing left-right
-        if (r >= 3 && c <= 3 && grid[r - 1][c + 1] == color && grid[r - 2][c + 2] == color
-                && grid[r - 3][c + 3] == color) {
-            // placed in bottom left spot
-            return true;
-        } else if (r >= 2 && r <= 4 && c >= 1 && c <= 4 && grid[r + 1][c - 1] == color && grid[r - 1][c + 1] == color
-                && grid[r - 2][c + 2] == color) { // 2nd left
-            return true;
-        } else if (r >= 1 && r <= 3 && c >= 2 && c <= 5 && grid[r + 1][c - 1] == color && grid[r + 2][c - 2] == color
-                && grid[r - 1][c + 1] == color) { // 2nd right
-            return true;
-        } else if (r <= 2 && c >= 3 && grid[r + 1][c - 1] == color && grid[r + 2][c - 2] == color
-                && grid[r + 3][c - 3] == color) { // placed in top right spot
-            return true;
+        //top left -> bottom right
+        rStart = r - IN_A_ROW + 1;
+        cStart = c + IN_A_ROW - 1;
+        colorInARow = 0;
+        for(int i = 0; i < COLUMNS; i++) {
+        	int curR = rStart - i;
+        	int curC = cStart + i;
+        	if(curR >= ROWS || curC < 0) {
+        		break; //out of bounds for the rest of the loop
+        	} else if(curR < 0 || curC >= COLUMNS || grid[curR][curC] != color) {
+        		colorInARow = 0; //currently out of bounds or wrong color
+        	} else {
+        		colorInARow++;
+        		if(colorInARow == IN_A_ROW) {
+        			return true;
+        		}
+        	}
         }
-
         return false; // means that placing the chip did not result in a win
     }
 
