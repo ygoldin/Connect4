@@ -1,8 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class Connect4Frame extends JFrame {
-	private Connect4Model model;
+	private Connect4Model connect4Model;
 	private ColumnButton[] columns;
 	
 	public Connect4Frame() {
@@ -10,8 +11,7 @@ public class Connect4Frame extends JFrame {
 		setMinimumSize(new Dimension(1024, 768));
 		setTitle("Connect 4");
 		setBackground(Color.BLUE);
-		model = new Connect4Model();
-		//setupButtons();
+		connect4Model = new Connect4Model();
 		setupButtons();
 	}
 	
@@ -21,12 +21,13 @@ public class Connect4Frame extends JFrame {
 		columns = new ColumnButton[Connect4Model.COLUMNS];
 		for(int c = 0; c < columns.length; c++) {
 			columns[c] = new ColumnButton(c);
-			buttonPanel.add(columns[c]);
+			ColumnButton cur = columns[c];
+			buttonPanel.add(cur);
 		}
 		add(buttonPanel);
 	}
 	
-	private static class ColumnButton extends JButton {
+	private class ColumnButton extends JButton {
 		public JLabel[] rows;
 		public int columnNumber;
 		
@@ -38,6 +39,13 @@ public class Connect4Frame extends JFrame {
 				rows[r] = new JLabel("" + r + columnNumber);
 				this.add(rows[r]);
 			}
+			addActionListener(e -> {
+				if(!connect4Model.columnFilled(columnNumber)) {
+					int curPlayer = connect4Model.getCurPlayer();
+					int placedRow = connect4Model.putDisk(columnNumber);
+					rows[placedRow].setText("player" + curPlayer);
+				}
+			});
 		}
 	}
 }
