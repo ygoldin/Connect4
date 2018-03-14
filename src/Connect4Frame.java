@@ -40,7 +40,7 @@ public class Connect4Frame extends JFrame {
 				this.add(rows[r]);
 			}
 			addActionListener(e -> {
-				if(!connect4Model.columnFilled(columnNumber)) {
+				if(!connect4Model.isGameOver() && !connect4Model.columnFilled(columnNumber)) {
 					int curPlayer = connect4Model.getCurPlayer();
 					int placedRow = connect4Model.putDisk(columnNumber);
 					rows[placedRow].setText("player" + curPlayer);
