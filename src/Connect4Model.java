@@ -161,14 +161,14 @@ public class Connect4Model {
         }
         //top left -> bottom right
         rStart = lastFilledRow - IN_A_ROW + 1;
-        cStart = lastFilledColumn + IN_A_ROW - 1;
+        cStart = lastFilledColumn - IN_A_ROW + 1;
         colorInARow = 0;
         for(int i = 0; i < COLUMNS; i++) {
-        	int curR = rStart - i;
+        	int curR = rStart + i;
         	int curC = cStart + i;
-        	if(curR >= ROWS || curC < 0) {
+        	if(curR >= ROWS || curC >= COLUMNS) {
         		break; //out of bounds for the rest of the loop
-        	} else if(curR < 0 || curC >= COLUMNS || grid[curR][curC] != curPlayer) {
+        	} else if(curR < 0 || curC < 0 || grid[curR][curC] != curPlayer) {
         		colorInARow = 0; //out of bounds at the start of the loop, or wrong color
         	} else {
         		colorInARow++;
