@@ -4,7 +4,7 @@ import java.awt.*;
 public class Connect4Frame extends JFrame {
 	private Connect4Model connect4Model;
 	private ColumnButton[] columns;
-	private static final Color[] PLAYER_COLORS = {Color.RED, Color.YELLOW};
+	private static final Color[] GAME_COLORS = {Color.BLUE, Color.RED, Color.YELLOW};
 	
 	public Connect4Frame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -34,8 +34,10 @@ public class Connect4Frame extends JFrame {
 			columnNumber = column;
 			rows = new GridCircle[Connect4Model.ROWS];
 			setLayout(new GridLayout(rows.length, 1));
-			setBackground(Color.BLUE);
+			setBackground(GAME_COLORS[0]);
 			setOpaque(true);
+			setBorderPainted(false);
+			setRolloverEnabled(false);
 			for(int r = 0; r < rows.length; r++) {
 				rows[r] = new GridCircle();
 				rows[r].setOpaque(true);
@@ -45,7 +47,7 @@ public class Connect4Frame extends JFrame {
 				if(!connect4Model.isGameOver() && !connect4Model.columnFilled(columnNumber)) {
 					int curPlayer = connect4Model.getCurPlayer();
 					int placedRow = connect4Model.putDisk(columnNumber);
-					rows[placedRow].changeColor(PLAYER_COLORS[curPlayer - 1]);
+					rows[placedRow].changeColor(GAME_COLORS[curPlayer]);
 					rows[placedRow].repaint();
 				}
 			});
@@ -54,6 +56,7 @@ public class Connect4Frame extends JFrame {
 	
 	private static class GridCircle extends JComponent {
 		public Color color;
+		private static final int HEIGHT_OFFSET = 5;
 		
 		public GridCircle() {
 			color = Color.WHITE;
@@ -67,7 +70,8 @@ public class Connect4Frame extends JFrame {
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			g.setColor(color);
-			g.fillOval(0, 0, getWidth(), getWidth());
+			int diameter = Math.min(getWidth(), getHeight() - HEIGHT_OFFSET);
+			g.fillOval(0, 0, diameter, diameter);
 		}
 	}
 }
