@@ -27,25 +27,47 @@ public class Connect4Frame extends JFrame {
 	}
 	
 	private class ColumnButton extends JButton {
-		public JLabel[] rows;
+		public GridCircle[] rows;
 		public int columnNumber;
 		
 		public ColumnButton(int column) {
 			columnNumber = column;
-			rows = new JLabel[Connect4Model.ROWS];
-			this.setLayout(new GridLayout(rows.length, 1));
+			rows = new GridCircle[Connect4Model.ROWS];
+			setLayout(new GridLayout(rows.length, 1));
+			setBackground(Color.BLUE);
+			setOpaque(true);
 			for(int r = 0; r < rows.length; r++) {
-				rows[r] = new JLabel();
-				this.add(rows[r]);
+				rows[r] = new GridCircle();
+				rows[r].setOpaque(true);
+				add(rows[r]);
 			}
 			addActionListener(e -> {
 				if(!connect4Model.isGameOver() && !connect4Model.columnFilled(columnNumber)) {
 					int curPlayer = connect4Model.getCurPlayer();
 					int placedRow = connect4Model.putDisk(columnNumber);
-					rows[placedRow].setBackground(PLAYER_COLORS[curPlayer - 1]);
-					rows[placedRow].setOpaque(true);
+					rows[placedRow].changeColor(PLAYER_COLORS[curPlayer - 1]);
+					rows[placedRow].repaint();
 				}
 			});
+		}
+	}
+	
+	private static class GridCircle extends JComponent {
+		public Color color;
+		
+		public GridCircle() {
+			color = Color.WHITE;
+		}
+		
+		public void changeColor(Color newColor) {
+			color = newColor;
+		}
+		
+		@Override
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			g.setColor(color);
+			g.fillOval(0, 0, getWidth(), getWidth());
 		}
 	}
 }
