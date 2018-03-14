@@ -2,12 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Connect4Frame extends JFrame {
-	private boolean firstPlayersTurn;
-	private Grid grid;
+	private Connect4Model model;
 	
 	public Connect4Frame() {
-		firstPlayersTurn = true;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		grid = new Grid();
+		setMinimumSize(new Dimension(1024, 768));
+		setTitle("Connect 4");
+		model = new Connect4Model();
 	}
 }

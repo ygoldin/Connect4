@@ -1,7 +1,7 @@
 /**
  * a Grid can be used as the model for a Connect4 game
  */
-public class Grid {
+public class Connect4Model {
     private int[][] grid;
     private int filledSpots;
     private int curPlayer;
@@ -13,7 +13,7 @@ public class Grid {
     /**
      * constructs a ROWSxCOLUMNS grid where each spot is initialized as empty
      */
-    public Grid() {
+    public Connect4Model() {
         grid = new int[ROWS][COLUMNS];
         filledSpots = 0;
         curPlayer = 1;

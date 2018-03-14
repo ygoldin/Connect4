@@ -32,7 +32,7 @@ public class Connect4 {
         // everything up to this point simply creates the chart in the drawing
         // panel with the 6x7 grid
 
-        Grid chart = new Grid();
+        Connect4Model chart = new Connect4Model();
         Scanner input = new Scanner(System.in);
         int player1wins = 0;
         int player2wins = 0;
@@ -42,7 +42,7 @@ public class Connect4 {
 
         do { // at least one game will be played
             if (draws + player1wins + player2wins > 0) { // is only done for the non-first game
-                chart = new Grid();
+                chart = new Connect4Model();
                 graphic.setColor(Color.WHITE);
                 graphic.fillRect(50, 851, 900, 50);
                 for (int c = 0; c < 7; c++) {
@@ -95,7 +95,7 @@ public class Connect4 {
     // they put their chip in whichever valid column they want
     // then the method checks if placing that chip made the player win, which
     // returns "true", otherwise it's "false"
-    private static void onePlayersMove(Scanner input, Grid chart, Graphics graphic) {
+    private static void onePlayersMove(Scanner input, Connect4Model chart, Graphics graphic) {
     	int playerN = chart.getCurPlayer();
         System.out.print("Player " + playerN + ": which column do you want to put a chip in? ");
         int column = whichColumn(input, chart);
@@ -111,7 +111,7 @@ public class Connect4 {
 
     // prompts the user for a column to enter their chip in
     // will keep asking until a valid column is entered
-    private static int whichColumn(Scanner input, Grid chart) {
+    private static int whichColumn(Scanner input, Connect4Model chart) {
         int column = -1;
         if (input.hasNextInt()) { // they entered an integer
             column = input.nextInt();
