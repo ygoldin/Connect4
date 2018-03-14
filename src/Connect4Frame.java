@@ -4,7 +4,8 @@ import java.awt.*;
 public class Connect4Frame extends JFrame {
 	private Connect4Model connect4Model;
 	private ColumnButton[] columns;
-	private static final Color[] GAME_COLORS = {Color.BLUE, Color.RED, Color.YELLOW};
+	private static final NamedColor[] GAME_COLORS = {new NamedColor(Color.BLUE, "blue"),
+			new NamedColor(Color.RED, "red"), new NamedColor(Color.YELLOW, "yellow")};
 	
 	public Connect4Frame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -26,6 +27,16 @@ public class Connect4Frame extends JFrame {
 		add(buttonPanel);
 	}
 	
+	private static class NamedColor {
+		public Color color;
+		public String name;
+		
+		public NamedColor(Color color, String name) {
+			this.color = color;
+			this.name = name;
+		}
+	}
+	
 	private class ColumnButton extends JButton {
 		public GridCircle[] rows;
 		public int columnNumber;
@@ -34,7 +45,7 @@ public class Connect4Frame extends JFrame {
 			columnNumber = column;
 			rows = new GridCircle[Connect4Model.ROWS];
 			setLayout(new GridLayout(rows.length, 1));
-			setBackground(GAME_COLORS[0]);
+			setBackground(GAME_COLORS[0].color);
 			setOpaque(true);
 			setBorderPainted(false);
 			setRolloverEnabled(false);
@@ -47,8 +58,17 @@ public class Connect4Frame extends JFrame {
 				if(!connect4Model.isGameOver() && !connect4Model.columnFilled(columnNumber)) {
 					int curPlayer = connect4Model.getCurPlayer();
 					int placedRow = connect4Model.putDisk(columnNumber);
-					rows[placedRow].changeColor(GAME_COLORS[curPlayer]);
+					rows[placedRow].changeColor(GAME_COLORS[curPlayer].color);
 					rows[placedRow].repaint();
+					if(connect4Model.isGameOver()) {
+						String message = "Game over - ";
+						if(connect4Model.isDraw()) {
+							message += "it's a draw!";
+						} else {
+							message += GAME_COLORS[curPlayer].name + " won!";
+						}
+						JOptionPane.showMessageDialog(Connect4Frame.this, message);
+					}
 				}
 			});
 		}
