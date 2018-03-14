@@ -1,5 +1,6 @@
 /**
- * a Grid can be used as the model for a Connect4 game
+ * Connect4Model can be used to model a game of Connect4
+ * @author Yael Goldin
  */
 public class Connect4Model {
     private int[][] grid;
@@ -18,15 +19,6 @@ public class Connect4Model {
         filledSpots = 0;
         curPlayer = 1;
         lastMoveWon = false;
-    }
-
-    /**
-     * returns the grid
-     * 
-     * @return an array representation of the grid
-     */
-    public int[][] getGrid() {
-        return grid;
     }
     
     /**
@@ -53,10 +45,9 @@ public class Connect4Model {
     }
 
     /**
-     * puts *color* into the given column
+     * puts the current player's disk into the given column
      * 
      * @param column The column to put the disk in
-     * @param color The color to put in that column
      * @return the row the color was put in
      * @throws IllegalStateException if the game is over
      * @throws IllegalArgumentException if column isn't in the range [0, COLUMNS) or the column is full
@@ -81,39 +72,6 @@ public class Connect4Model {
         		wonDiagonally(lastFilledRow, lastFilledColumn);
         curPlayer = (curPlayer % 2) + 1; //1 -> 2, 2 -> 1
         return lastFilledRow;
-    }
-
-    /**
-     * checks if the board is full in a draw
-     * 
-     * @return true if the game has ended in a draw, false otherwise
-     */
-    public boolean isDraw() {
-        return filledSpots == ROWS*COLUMNS;
-    }
-
-    /**
-     * checks if the game ended
-     * 
-     * @return true if someone won or it's a draw, false otherwise
-     */
-    public boolean isGameOver() {
-    	return lastMoveWon || isDraw();
-    }
-    
-    /**
-     * returns the winner or if there is none
-     * 
-     * @return -1 if the game isn't over, 0 if it ended in a draw, 1 if player 1 won, 2 if player 2 won
-     */
-    public int winner() {
-    	if(lastMoveWon) {
-    		return (curPlayer % 2) + 1; //curPlayer changes after every move, need to change it back
-    	} else if(isDraw()) {
-    		return 0;
-    	} else {
-    		return -1;
-    	}
     }
     
     //checks if the player has 4 in a row vertically
@@ -179,20 +137,37 @@ public class Connect4Model {
         }
         return false;
     }
-
-    @Override
+    
     /**
-     * @return a String representation of the chart as a two-dimensional array with '|' separating the
+     * checks if the board is full (not necessarily a draw)
+     * 
+     * @return true if the game has ended because the board is full, false otherwise
      */
-    public String toString() {
-        String result = "  0   1   2   3   4   5   6\n";
-        for (int r = 0; r < 6; r++) {
-            result += "[ ";
-            for (int c = 0; c < 6; c++) {
-                result += grid[r][c] + " | ";
-            }
-            result += grid[r][6] + " ]\n";
-        }
-        return result;
+    public boolean isFull() {
+        return filledSpots == ROWS*COLUMNS;
+    }
+
+    /**
+     * checks if the game ended
+     * 
+     * @return true if someone won or it's a draw, false otherwise
+     */
+    public boolean isGameOver() {
+    	return lastMoveWon || isFull();
+    }
+    
+    /**
+     * returns the winner or if there is none
+     * 
+     * @return -1 if the game isn't over, 0 if it ended in a draw, 1 if player 1 won, 2 if player 2 won
+     */
+    public int winner() {
+    	if(lastMoveWon) {
+    		return (curPlayer % 2) + 1; //curPlayer changes after every move, need to change it back
+    	} else if(isFull()) {
+    		return 0;
+    	} else {
+    		return -1;
+    	}
     }
 }

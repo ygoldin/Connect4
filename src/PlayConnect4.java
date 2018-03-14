@@ -1,5 +1,9 @@
 import java.awt.*;
 
+/**
+ * PlayConnect4 can be used to play an interactive game of Connect4
+ * @author Yael Goldin
+ */
 public class PlayConnect4 {
 
 	public static void main(String[] args) {
