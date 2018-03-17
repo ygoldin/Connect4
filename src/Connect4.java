@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 /**
  * this class can be used to play a game of Connect4 via a DrawingPanel and user input given in System.in
+ * it is an old version, and the better version is in "PlayConnect4"
  * @author Yael Goldin
  */
 public class Connect4 {

@@ -12,6 +12,9 @@ public class Connect4Frame extends JFrame {
 	private static final NamedColor[] GAME_COLORS = {new NamedColor(Color.BLUE, "blue"),
 			new NamedColor(Color.RED, "red"), new NamedColor(Color.YELLOW, "yellow")};
 	
+	/**
+	 * constructs the initial frame
+	 */
 	public Connect4Frame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setMinimumSize(new Dimension(1024, 768));
@@ -27,6 +30,30 @@ public class Connect4Frame extends JFrame {
 			buttonPanel.add(cur);
 		}
 		add(buttonPanel);
+	}
+	
+	//runs the end of game actions such as printing the game over message with whether it's a draw or
+	//the "curPlayer" won, and resetting the game if the user wants to play again
+	private void gameOverActions(int curPlayer) {
+		assert(connect4Model.isGameOver());
+		String message = "Game over - ";
+		if(connect4Model.isFull()) {
+			message += "it's a draw!";
+		} else {
+			message += GAME_COLORS[curPlayer].name + " won!";
+		}
+		if(JOptionPane.showConfirmDialog(this, message, "Play again?", JOptionPane.YES_NO_OPTION)
+				== JOptionPane.YES_OPTION) { //play again
+			connect4Model = new Connect4Model();
+			for(ColumnButton column : columns) {
+				for(GridCircle row : column.rows) {
+					row.changeColor(GridCircle.INITIAL_COLOR);
+				}
+			}
+			repaint();
+		} else { //end game
+			System.exit(0);
+		}
 	}
 	
 	//this class represents a color with a name
@@ -75,13 +102,7 @@ public class Connect4Frame extends JFrame {
 					rows[placedRow].changeColor(GAME_COLORS[curPlayer].color);
 					rows[placedRow].repaint();
 					if(connect4Model.isGameOver()) {
-						String message = "Game over - ";
-						if(connect4Model.isFull()) {
-							message += "it's a draw!";
-						} else {
-							message += GAME_COLORS[curPlayer].name + " won!";
-						}
-						JOptionPane.showMessageDialog(Connect4Frame.this, message);
+						Connect4Frame.this.gameOverActions(curPlayer);
 					}
 				}
 			});
