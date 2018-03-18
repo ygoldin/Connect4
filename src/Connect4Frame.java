@@ -26,8 +26,7 @@ public class Connect4Frame extends JFrame {
 		columns = new ColumnButton[Connect4Model.COLUMNS];
 		for(int c = 0; c < columns.length; c++) {
 			columns[c] = new ColumnButton(c);
-			ColumnButton cur = columns[c];
-			buttonPanel.add(cur);
+			buttonPanel.add(columns[c]);
 		}
 		add(buttonPanel);
 	}
@@ -76,7 +75,7 @@ public class Connect4Frame extends JFrame {
 	//this class represents a column in the game of connect4
 	private class ColumnButton extends JButton {
 		private GridCircle[] rows;
-		private int columnNumber;
+		private final int columnNumber;
 		
 		/**
 		 * constructs a clickable button representing one column in the connect 4 grid
