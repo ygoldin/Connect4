@@ -1,12 +1,14 @@
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.GridLayout;
 
-/**
- * Connect4Frame can be used to control and display a game of Connect4
- * @author Yael Goldin
- */
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 @SuppressWarnings("serial")
-public class Connect4Frame extends JFrame {
+public class Connect4Panel extends JPanel {
 	private Connect4Model connect4Model;
 	private ColumnButton[] columns;
 	private static final NamedColor[] GAME_COLORS = {new NamedColor(Color.BLUE, "blue"),
@@ -15,20 +17,15 @@ public class Connect4Frame extends JFrame {
 	/**
 	 * constructs the initial frame
 	 */
-	public Connect4Frame() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setMinimumSize(new Dimension(1024, 768));
-		setTitle("Connect 4");
+	public Connect4Panel() {
 		connect4Model = new Connect4Model();
 		
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new GridLayout(1, Connect4Model.COLUMNS));
+		setLayout(new GridLayout(1, Connect4Model.COLUMNS));
 		columns = new ColumnButton[Connect4Model.COLUMNS];
 		for(int c = 0; c < columns.length; c++) {
 			columns[c] = new ColumnButton(c);
-			buttonPanel.add(columns[c]);
+			add(columns[c]);
 		}
-		add(buttonPanel);
 	}
 	
 	//runs the end of game actions such as printing the game over message with whether it's a draw or
@@ -101,7 +98,7 @@ public class Connect4Frame extends JFrame {
 					rows[placedRow].changeColor(GAME_COLORS[curPlayer].color);
 					rows[placedRow].repaint();
 					if(connect4Model.isGameOver()) {
-						Connect4Frame.this.gameOverActions(curPlayer);
+						Connect4Panel.this.gameOverActions(curPlayer);
 					}
 				}
 			});
